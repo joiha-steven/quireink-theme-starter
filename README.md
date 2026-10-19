@@ -13,6 +13,10 @@ CSS still win over anything the theme says. The blog checks every theme when it 
 refuses one that breaks a rule, so the same checker runs on your machine before you ship
 ([ADR 0072](https://github.com/joiha-steven/quireink/blob/main/docs/decisions/0072-a-theme-is-a-checked-skin-over-the-one-markup.md)).
 
+**The main reference is the author guide,
+[docs/themes.md](https://github.com/joiha-steven/quireink/blob/main/docs/themes.md)**: what a theme may touch, how the
+pages are built, and the loop from first edit to install. This repository is its worked example.
+
 This one is called **Starter**: a calm reading theme with the menu in the masthead, soft cards
 for lists and the front page, hairlines between sections, and three palettes (Linen, Slate,
 Heather), each with a light and a dark half.
@@ -142,8 +146,11 @@ the site in the theme in a new tab without changing anything; choosing the tile 
   `theme.json` and reach the page through those variables. (F1)
 - **Selectors only from the appearance contract**: any element, but only the classes, ids and
   `data-*` attributes the product promises to keep. The list is in
-  [appearance.md](https://github.com/joiha-steven/quireink/blob/main/docs/appearance.md) and in
-  [`src/content/appearance-contract.ts`](https://github.com/joiha-steven/quireink/blob/main/src/content/appearance-contract.ts). (S1)
+  [appearance-contract.md](https://github.com/joiha-steven/quireink/blob/main/docs/appearance-contract.md)
+  and in
+  [`src/content/appearance-contract.ts`](https://github.com/joiha-steven/quireink/blob/main/src/content/appearance-contract.ts).
+  Reach a part by its contract name (`.listing-head`, `.card-exc`, `.card-meta`, `.note-source`,
+  `.tl-yr`, `data-lead`, `data-thumb`, `data-short`), not by its position in the markup. (S1)
 - **Style both the blog pages and the front page**: a sheet that touches only one is refused. (S2)
 - **No words in `content:`**: only `""`, counters and the engine's labels (`var(--l-figure)`,
   `var(--l-table)`), because a word in a stylesheet cannot be translated. (S3)
@@ -154,12 +161,14 @@ the site in the theme in a new tab without changing anything; choosing the tile 
 - **A theme that hides `.post-info` must bring back an untitled post's header**, or a post with
   no title shows its date nowhere on a wide screen. Starter keeps the panel; the Newspaper theme
   shows the other way in [looks.md](https://github.com/joiha-steven/quireink/blob/main/docs/conventions/looks.md).
-- **`layout.menu: "header"` draws the menu in the masthead; hiding the rail's copy is the
-  theme's job.** Starter's chrome group shows how.
+- **`layout.menu: "header"` draws the menu in the masthead and the engine does the rest**: it
+  hides the rail's copy (`.rail-menu-copy`) and a rail left holding only that copy
+  (`.rail-menu-only`) from 60rem, and the phone drawer keeps the menu. The theme only places the
+  menu in its header; Starter's chrome group shows how.
 
 The rule codes are listed in
-[`src/theme/types.ts`](https://github.com/joiha-steven/quireink/blob/main/src/theme/types.ts). A
-full guide for theme authors, `docs/themes.md`, is coming.
+[`src/theme/types.ts`](https://github.com/joiha-steven/quireink/blob/main/src/theme/types.ts), and
+the whole story is in the [author guide](https://github.com/joiha-steven/quireink/blob/main/docs/themes.md).
 
 ## The font
 

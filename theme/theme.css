@@ -30,7 +30,7 @@
 
 
 /* ── Chrome: header.site, .site-bar, .title, .site-h1, .site-actions, .tagline, .site-menu,
-   .rail, .rail-inner, .toc, footer.site ─────────────────────────────────────────────── */
+   footer.site ─────────────────────────────────────────────────────────────────────────── */
 
 /* The bar gives up its box so the title, the tagline, the menu and the buttons can share
    one grid: title and buttons on the first row, the tagline under the title, the menu on a
@@ -49,19 +49,12 @@ header.site .site-actions{grid-column:2;grid-row:1}
 header.site .tagline{grid-column:1 / -1;grid-row:2;margin:calc(var(--sp) * .25) 0 0}
 /* The menu is drawn in the header because theme.json asks for it (layout.menu "header").
    Under 60rem the engine hides it and the drawer carries it, so only the wide layout is
-   placed here. */
+   placed here. From 60rem the engine also hides the rail's copy of the menu, and a rail left
+   holding nothing else, so the theme has nothing to hide. */
 @media (min-width:60rem){
   header.site .site-menu{grid-column:1 / -1;grid-row:3;justify-content:flex-start;
     margin:calc(var(--sp) * .75) 0 0;padding:calc(var(--sp) * .75) 0 0;
     border-top:1px solid var(--c-rule)}
-  /* The engine draws the masthead menu and leaves the rail's copy for the theme to hide, so a
-     page served without the masthead menu (a cached one, say) still has a menu somewhere.
-     Hence the :has(): hide the copy only where the masthead really holds one. A rail left
-     with nothing in it goes too, or it draws its margins and its rule round an empty box. */
-  /* Depends on markup the contract does not name (the rail's menu is a bare nav); may need
-     changing after a product update. */
-  body:has(.site-bar > .site-menu) .rail-inner > nav:not(.toc){display:none}
-  body:has(.site-bar > .site-menu) .rail:not(:has(.rail-inner > :not(nav:not(.toc)))){display:none}
 }
 
 /* The name is set in the reading face: it is the one piece of the chrome that is the blog's
@@ -74,7 +67,7 @@ header.site .site-menu a:hover{color:var(--c-link)}
 footer.site{border-top:1px solid var(--c-rule)}
 
 
-/* ── Blog home and every list: .post-list, .card-kick, .card-thumb, .tl-year-tag,
+/* ── Blog home and every list: .post-list, .card-kick, .card-thumb, .tl-yr, .tl-year-tag,
    html[data-list] ──────────────────────────────────────────────────────────────────── */
 
 /* Each entry in a list is a card: the soft ground tells the eye where one piece ends before
@@ -82,13 +75,11 @@ footer.site{border-top:1px solid var(--c-rule)}
 .post-list article{background:var(--t-card);border:1px solid var(--t-card-line);
   border-radius:var(--t-round);padding:var(--t-pad)}
 .post-list{row-gap:var(--t-stack)}
-/* The feed on the blog home groups its entries by year inside the list, so there the gap
-   between cards is a margin; elsewhere the list is a flex column and its gap does the work.
-   In the reader's grid view the grid's own gaps space the cards, and a margin would push
+/* The feed on the blog home groups its entries by year (.tl-yr) inside the list, so there the
+   gap between cards is a margin; elsewhere the list is a flex column and its gap does the
+   work. In the reader's grid view the grid's own gaps space the cards, and a margin would push
    every card after the first a step lower than its neighbour. */
-/* Depends on markup the contract does not name (the feed's year groups); may need changing
-   after a product update. */
-html:not([data-list=grid]) .post-list > * > article + article{margin-top:var(--t-stack)}
+html:not([data-list=grid]) .tl-yr article + article{margin-top:var(--t-stack)}
 .post-list :is(h1,h2,h3) a{color:var(--c-heading)}
 .post-list :is(h1,h2,h3) a:hover{color:var(--c-link)}
 
@@ -171,14 +162,15 @@ article > header h1{font-family:var(--font-display);text-wrap:balance}
 .fc-deck{color:var(--c-text)}
 
 
-/* ── Notes, archive, search, chips, the rail and the sign-up: .chip, .arc-yr, .rail,
-   .subscribe-card ──────────────────────────────────────────────────────────────────── */
+/* ── Notes, archive, search, chips, the rail and the sign-up: .listing-head, .note-source,
+   .chip, .arc-yr, .rail, .subscribe-card ──────────────────────────────────────────────── */
 
-/* A listing's own heading (Archive, Notes, Search, a tag's name) is the first child of main.
-   The contract names no class for that header, so it is reached by position; a post's title
-   is not matched, because it sits one level deeper, inside the article's header. This
-   depends on markup the contract does not name; it may need changing after a product update. */
-main > :first-child > h1{font-family:var(--font-display);font-weight:var(--fw-heading)}
+/* A listing's own heading (Archive, Notes, Search, a tag's name) is the h1 of .listing-head;
+   a post's title is not matched, because it sits in the article's header. */
+.listing-head h1{font-family:var(--font-display);font-weight:var(--fw-heading)}
+/* A note's source line sits under its title and would touch it without this; the base leaves
+   the line to the title's own margin. */
+.note-source{margin-top:calc(var(--sp) * .5)}
 
 .chip{border-radius:999px}
 .arc-yr h2{font-family:var(--font-reading)}
