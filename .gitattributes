@@ -1,0 +1,5 @@
+# Text is LF on every machine, so a theme zipped on Windows carries the same bytes.
+* text=auto eol=lf
+*.woff2 binary
+*.webp binary
+*.png binary

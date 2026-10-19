@@ -1,0 +1,189 @@
+/* Starter: a calm reading theme for Quire Ink, and a worked example for theme authors.
+
+   The rules every line below lives by (the product's checker refuses the rest):
+   - Colour only from the palette: var(--c-bg), --c-text, --c-heading, --c-meta, --c-link,
+     --c-rule, --c-accent, or colours mixed or derived from them. No hex, no names.
+   - Sizes only from the type scale: var(--fs-*), em or %. Faces only var(--font-reading),
+     var(--font-sans), var(--font-mono), var(--font-display) or inherit.
+   - Classes, ids and data-* attributes only from the appearance contract.
+   - Custom properties of our own are named --t-*.
+   - No !important, no @import, no @font-face, no url() outside this package, no words in
+     content.
+
+   The sheet is linked only while the theme is worn and sits in the "theme" cascade layer, so
+   the owner's settings and Custom CSS still win over everything here. That is why no rule
+   below is prefixed with html[data-theme=starter]: nothing outside this theme ever reads it. */
+
+
+/* ── Shared tokens: --t-* names, built only from the palette and the spacing unit ───────── */
+
+/* A card is the page with a breath of heading ink in it: a shade darker by day and a shade
+   lighter by night, from one formula, because the heading ink is the dark one by day and the
+   light one by night. */
+:root{
+  --t-card:color-mix(in srgb,var(--c-heading) 4%,var(--c-bg));
+  --t-card-line:color-mix(in srgb,var(--c-heading) 9%,var(--c-bg));
+  --t-round:calc(var(--radius) * 1.5);
+  --t-pad:calc(var(--sp) * 1.25);
+  --t-stack:calc(var(--sp) * 1.25);
+}
+
+
+/* ── Chrome: header.site, .site-bar, .title, .site-h1, .site-actions, .tagline, .site-menu,
+   .rail, .rail-inner, .toc, footer.site ─────────────────────────────────────────────── */
+
+/* The bar gives up its box so the title, the tagline, the menu and the buttons can share
+   one grid: title and buttons on the first row, the tagline under the title, the menu on a
+   ruled row of its own. Without this the menu, the title and five buttons fight for one line
+   of a 672px column and wrap wherever the arithmetic fails. */
+header.site{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;
+  column-gap:var(--sp);padding-bottom:calc(var(--sp) * .75);
+  border-bottom:1px solid var(--c-rule)}
+/* Depends on markup the contract does not name (what sits inside .site-bar, and the tagline
+   outside it); may need changing after a product update. */
+header.site .site-bar{display:contents}
+/* justify-self:start keeps the name's link the width of the name: a grid item stretches to its
+   column by default, and the empty space after the words would go home when clicked. */
+header.site .site-bar > :is(.title,.site-h1){grid-column:1;grid-row:1;margin:0;justify-self:start}
+header.site .site-actions{grid-column:2;grid-row:1}
+header.site .tagline{grid-column:1 / -1;grid-row:2;margin:calc(var(--sp) * .25) 0 0}
+/* The menu is drawn in the header because theme.json asks for it (layout.menu "header").
+   Under 60rem the engine hides it and the drawer carries it, so only the wide layout is
+   placed here. */
+@media (min-width:60rem){
+  header.site .site-menu{grid-column:1 / -1;grid-row:3;justify-content:flex-start;
+    margin:calc(var(--sp) * .75) 0 0;padding:calc(var(--sp) * .75) 0 0;
+    border-top:1px solid var(--c-rule)}
+  /* The engine draws the masthead menu and leaves the rail's copy for the theme to hide, so a
+     page served without the masthead menu (a cached one, say) still has a menu somewhere.
+     Hence the :has(): hide the copy only where the masthead really holds one. A rail left
+     with nothing in it goes too, or it draws its margins and its rule round an empty box. */
+  /* Depends on markup the contract does not name (the rail's menu is a bare nav); may need
+     changing after a product update. */
+  body:has(.site-bar > .site-menu) .rail-inner > nav:not(.toc){display:none}
+  body:has(.site-bar > .site-menu) .rail:not(:has(.rail-inner > :not(nav:not(.toc)))){display:none}
+}
+
+/* The name is set in the reading face: it is the one piece of the chrome that is the blog's
+   voice rather than its furniture. The buttons and the menu keep the owner's chrome font. */
+header.site .title{font-family:var(--font-reading);font-weight:var(--fw-heading);
+  letter-spacing:var(--ls-h3);color:var(--c-heading);text-decoration:none}
+header.site .tagline{font-family:var(--font-reading);font-style:italic;color:var(--c-meta)}
+header.site .site-menu a:hover{color:var(--c-link)}
+
+footer.site{border-top:1px solid var(--c-rule)}
+
+
+/* ── Blog home and every list: .post-list, .card-kick, .card-thumb, .tl-year-tag,
+   html[data-list] ──────────────────────────────────────────────────────────────────── */
+
+/* Each entry in a list is a card: the soft ground tells the eye where one piece ends before
+   it has read a word, which is the job hairlines between rows usually do less quietly. */
+.post-list article{background:var(--t-card);border:1px solid var(--t-card-line);
+  border-radius:var(--t-round);padding:var(--t-pad)}
+.post-list{row-gap:var(--t-stack)}
+/* The feed on the blog home groups its entries by year inside the list, so there the gap
+   between cards is a margin; elsewhere the list is a flex column and its gap does the work.
+   In the reader's grid view the grid's own gaps space the cards, and a margin would push
+   every card after the first a step lower than its neighbour. */
+/* Depends on markup the contract does not name (the feed's year groups); may need changing
+   after a product update. */
+html:not([data-list=grid]) .post-list > * > article + article{margin-top:var(--t-stack)}
+.post-list :is(h1,h2,h3) a{color:var(--c-heading)}
+.post-list :is(h1,h2,h3) a:hover{color:var(--c-link)}
+
+/* The kicker is a category, so it is set small in the accent with a short bar before it: a
+   mark that says "section" without printing the word. */
+.card-kick a{color:var(--c-accent);text-decoration:none}
+.card-kick::before{content:"";display:inline-block;width:.9em;height:2px;
+  margin-right:.5em;vertical-align:.3em;background:var(--c-accent)}
+
+.card-thumb img{border-radius:var(--radius)}
+
+/* The timeline's year tag and month marks sit on the page, not on a card, so their mask is
+   the page colour the engine already gives them. Only the shape is ours. */
+.tl-year-tag{border-radius:999px}
+
+
+/* ── Post: article > header, .deck, .prose, .shiki, .table-scroll, .post-info, .series,
+   .series-bar, .author-box, .read-next-title, .related ─────────────────────────────────── */
+
+/* The title gets the display role's face: the reading face unless an owner adds one. */
+article > header h1{font-family:var(--font-display);text-wrap:balance}
+/* The standfirst gets a little more air under the title than the base gives, so it reads as
+   its own line rather than as the title's last. */
+.deck{font-family:var(--font-reading);font-style:italic;color:var(--c-meta);
+  margin-top:calc(var(--sp) * .5)}
+
+/* A section opens on a hairline across the column: the calm version of a chapter break. */
+.prose h2{padding-top:calc(var(--sp) * 1.25);border-top:1px solid var(--c-rule)}
+
+/* Quotations, code and tables share the card ground, so everything that is "not the
+   author's running text" is marked the same way. */
+.prose blockquote{background:var(--t-card);border-left:3px solid var(--c-accent);
+  border-radius:0 var(--t-round) var(--t-round) 0;padding:calc(var(--sp) * .75) var(--t-pad);
+  font-style:italic}
+.prose blockquote p{margin:0}
+.prose blockquote p + p{margin-top:calc(var(--sp) * .75)}
+.prose pre.shiki{border:1px solid var(--t-card-line);border-radius:var(--t-round)}
+.table-scroll{border:1px solid var(--t-card-line);border-radius:var(--t-round)}
+.prose figure img{border-radius:var(--radius)}
+
+/* The side column of facts stays: hiding .post-info would leave a post with no title
+   showing its date nowhere above the rail breakpoint (docs/conventions/looks.md). It only
+   loses the shout of the accent on its links. */
+.post-info a{color:var(--c-heading)}
+
+/* Sets the colour of a border the base draws, so it depends on the base drawing one, which the
+   contract does not promise; may need changing after a product update. */
+.series{background:var(--t-card);border-color:var(--t-card-line);border-radius:var(--t-round)}
+.series-bar{border-radius:999px}
+
+.author-box{background:var(--t-card);border:1px solid var(--t-card-line);
+  border-radius:var(--t-round);padding:var(--t-pad)}
+.read-next-title{font-family:var(--font-display)}
+/* Related titles are titles too: the reading face, as on the read-next line above them. */
+.related li > a{font-family:var(--font-reading)}
+
+
+/* ── Front page: .front-label, .front-grid, .fc, .fc-lead, .fc-media, .fc-cat, .fc-title,
+   .fc-deck ─────────────────────────────────────────────────────────────────────────── */
+
+/* A band's label is the front page's section heading: the reading face with the same short
+   accent bar the list kickers carry. An item's category carries it too, so a reader who
+   learned the mark on the blog home meets it again here. */
+.front-label{font-family:var(--font-reading);font-weight:var(--fw-heading);color:var(--c-heading)}
+.front-label::before,.fc-cat::before{content:"";display:inline-block;width:.9em;height:2px;
+  margin-right:.5em;vertical-align:.3em;background:var(--c-accent)}
+
+/* Cards with a picture get the card ground, padded so the picture and the words share one
+   inner edge. A headline-only row stays on the page: a card around six words is a button. */
+.front-grid .fc{background:var(--t-card);border:1px solid var(--t-card-line);
+  border-radius:var(--t-round);padding:var(--t-pad)}
+.fc-media img{border-radius:var(--radius)}
+.fc-title a{color:var(--c-heading)}
+.fc-title a:hover{color:var(--c-link)}
+.fc-cat a{color:var(--c-accent);text-decoration:none}
+/* The lead is a step up the scale from the base's, so the front page opens on one headline
+   rather than on a row of equals. Size, leading and tracking move together, as one role. */
+.fc-lead .fc-title{font-family:var(--font-display);text-wrap:balance;
+  font-size:var(--fs-h1);line-height:var(--lh-h1);letter-spacing:var(--ls-h1)}
+.fc-deck{color:var(--c-text)}
+
+
+/* ── Notes, archive, search, chips, the rail and the sign-up: .chip, .arc-yr, .rail,
+   .subscribe-card ──────────────────────────────────────────────────────────────────── */
+
+/* A listing's own heading (Archive, Notes, Search, a tag's name) is the first child of main.
+   The contract names no class for that header, so it is reached by position; a post's title
+   is not matched, because it sits one level deeper, inside the article's header. This
+   depends on markup the contract does not name; it may need changing after a product update. */
+main > :first-child > h1{font-family:var(--font-display);font-weight:var(--fw-heading)}
+
+.chip{border-radius:999px}
+.arc-yr h2{font-family:var(--font-reading)}
+.rail h2{font-family:var(--font-reading);font-weight:var(--fw-heading)}
+
+/* Sets the colour of a border the base draws, so it depends on the base drawing one, which the
+   contract does not promise; may need changing after a product update. */
+.subscribe-card{background:var(--t-card);border-color:var(--t-card-line);border-radius:var(--t-round)}

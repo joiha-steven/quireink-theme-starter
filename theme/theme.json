@@ -1,0 +1,51 @@
+{
+  "api": 1,
+  "id": "starter",
+  "name": "Starter",
+  "version": "1.0.0",
+  "author": "Quire Ink",
+  "homepage": "https://github.com/joiha-steven/quireink-theme-starter",
+  "license": "MIT-0",
+  "description": "A calm reading theme: a quiet masthead with the menu in it, soft cards for lists and the front page, and a reading column with room to breathe.",
+  "layout": {
+    "menu": "header"
+  },
+  "palettes": [
+    {
+      "id": "linen",
+      "name": "Linen",
+      "light": { "bg": "#f7f3ec", "text": "#2e2a25", "heading": "#1d1a16", "meta": "#665d52", "link": "#94401f", "rule": "#e2d9cb", "accent": "#94401f" },
+      "dark": { "bg": "#1c1a17", "text": "#e3dcd1", "heading": "#f3ede4", "meta": "#a99f91", "link": "#e8a07c", "rule": "#3a352f", "accent": "#e8a07c" }
+    },
+    {
+      "id": "slate",
+      "name": "Slate",
+      "light": { "bg": "#f4f6f8", "text": "#27303a", "heading": "#141b23", "meta": "#58636f", "link": "#285a8b", "rule": "#dce2e9", "accent": "#285a8b" },
+      "dark": { "bg": "#161b21", "text": "#d6dce4", "heading": "#f0f3f7", "meta": "#98a3b0", "link": "#8fb8e3", "rule": "#2d3540", "accent": "#8fb8e3" }
+    },
+    {
+      "id": "heather",
+      "name": "Heather",
+      "light": { "bg": "#f7f4f7", "text": "#2f2833", "heading": "#1e1822", "meta": "#665b6b", "link": "#7a3b6e", "rule": "#e4dbe5", "accent": "#7a3b6e" },
+      "dark": { "bg": "#1b171d", "text": "#e0d8e2", "heading": "#f3eef4", "meta": "#a597a9", "link": "#d79fcb", "rule": "#372f3a", "accent": "#d79fcb" }
+    }
+  ],
+  "fonts": [
+    {
+      "id": "starter-literata",
+      "name": "Literata",
+      "role": "reading",
+      "faces": [
+        { "file": "fonts/literata.woff2", "weight": 400, "style": "normal" },
+        { "file": "fonts/literata.woff2", "weight": 500, "style": "normal" },
+        { "file": "fonts/literata.woff2", "weight": 600, "style": "normal" },
+        { "file": "fonts/literata.woff2", "weight": 700, "style": "normal" }
+      ]
+    }
+  ],
+  "suggests": {
+    "palette": "linen",
+    "readingFont": "starter-literata",
+    "chromeFont": "inter"
+  }
+}
