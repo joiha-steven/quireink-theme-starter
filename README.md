@@ -113,11 +113,12 @@ powershell -ExecutionPolicy Bypass -File .\check.ps1 C:\src\quireink
 
 ## Zip it
 
-**Zip the folder's contents, not the folder.** `theme.json` must sit at the top of the zip.
-Finder's Compress and Explorer's "Send to compressed folder" on the folder itself put everything
-one level down, and the install refuses that. Hidden files are refused too (`.DS_Store`,
-`Thumbs.db`, `__MACOSX/`), and Finder on current macOS adds a `__MACOSX/` copy of every file even
-when you compress the contents, so make the zip with the command below rather than with Finder.
+**Zip the theme folder with the command below: it works on every blog.** `theme.json` goes at
+the top of the zip. A blog on a release after 2.2.20 also takes what Finder's Compress and
+Explorer's "Send to compressed folder" make: it reads a zip of the folder from inside that one
+folder, and leaves out what macOS and Windows add by themselves (`__MACOSX/`, `.DS_Store`,
+`Thumbs.db`, `desktop.ini`), saying how many. A blog on 2.2.20 or older refuses both, and every
+blog refuses any other hidden file.
 
 ```
 # macOS / Linux, from inside the theme folder
@@ -131,7 +132,8 @@ cd theme
 ```
 
 Run the checker on the zip before you hand it out: `bun run theme:check /path/to/my-theme.zip`.
-A zip made the wrong way gets a `hint:` line above its findings saying which way.
+It says what the install will read from inside and leave out, and a `hint:` when `theme.json` is
+further in than one folder.
 A zip is at most 5 MB, a font at most 400 KB, an image at most 1 MB, `theme.css` at most 64 KB.
 
 ## Install it
