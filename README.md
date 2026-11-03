@@ -15,7 +15,10 @@ refuses one that breaks a rule, so the same checker runs on your machine before 
 
 **The main reference is the author guide,
 [docs/themes.md](https://github.com/joiha-steven/quireink/blob/main/docs/themes.md)**: what a theme may touch, how the
-pages are built, and the loop from first edit to install. This repository is its worked example.
+pages are built, and the loop from first edit to install. The variables a theme reads, recipes (a
+grid home page, spacing, fonts without a font file) and the questions that come up are in
+[docs/themes-recipes.md](https://github.com/joiha-steven/quireink/blob/main/docs/themes-recipes.md).
+This repository is the guide's worked example.
 
 This one is called **Starter**: a calm reading theme with the menu in the masthead, soft cards
 for lists and the front page, hairlines between sections, and three palettes (Linen, Slate,
@@ -51,8 +54,10 @@ a licence text in `fonts/` included, which is why the font's licence lives in `l
    suggestion may name the theme's own palettes and fonts or the built-in ones.
 4. Edit `theme/theme.css`. Every group opens with a line saying what it styles and which
    names it uses; the comments say why each rule is there.
-5. Replace `theme/screenshot.webp` with a picture of your theme at exactly 1200 x 900 pixels.
-   The preview below writes full-page shots you can crop one from.
+5. Replace `theme/screenshot.webp`, or every blog shows your theme with Starter's picture. You do
+   not have to make one: each full `theme:preview` run (below) writes `screenshot.webp`, exactly
+   1200 x 900, from the top of your front page, into `.tmp/theme-preview/<id>/` in the product
+   clone. Copy it over this one when it looks right.
 
 ## The loop: edit, check, preview
 
@@ -86,6 +91,10 @@ bun run theme:preview /path/to/quireink-theme-starter/theme
   `--pages`, `--widths` and `--force` (run again over the last output) are listed in the
   [preview docs](https://github.com/joiha-steven/quireink/blob/main/docs/theme-install-api.md#preview-before-installing).
 
+While you work on one part, photograph only that:
+`--pages home-list,front-image,post-all-blocks --widths 1440` takes about five seconds where the
+full run takes a minute per palette.
+
 `check.sh` and `check.ps1` run both, from anywhere, given the clone's path as the first
 argument or in `QUIREINK`. They pass `--force` to the preview and any other options through,
 and exit with the checker's code when it refuses, otherwise with the preview's:
@@ -107,7 +116,8 @@ powershell -ExecutionPolicy Bypass -File .\check.ps1 C:\src\quireink
 **Zip the folder's contents, not the folder.** `theme.json` must sit at the top of the zip.
 Finder's Compress and Explorer's "Send to compressed folder" on the folder itself put everything
 one level down, and the install refuses that. Hidden files are refused too (`.DS_Store`,
-`Thumbs.db`, `__MACOSX/`), so leave them out.
+`Thumbs.db`, `__MACOSX/`), and Finder on current macOS adds a `__MACOSX/` copy of every file even
+when you compress the contents, so make the zip with the command below rather than with Finder.
 
 ```
 # macOS / Linux, from inside the theme folder
@@ -117,21 +127,25 @@ zip -r ../my-theme.zip . -x '.*' '*/.*' '__MACOSX/*'
 # Windows PowerShell, from inside the theme folder (the built-in bsdtar, not Compress-Archive,
 # which writes backslashes in names on Windows PowerShell 5)
 cd theme
-& "$env:SystemRoot\System32\tar.exe" -a -cf ..\my-theme.zip --exclude Thumbs.db --exclude .DS_Store (Get-ChildItem -Name)
+& "$env:SystemRoot\System32\tar.exe" -a -cf ..\my-theme.zip --exclude Thumbs.db --exclude desktop.ini --exclude .DS_Store (Get-ChildItem -Name)
 ```
 
 Run the checker on the zip before you hand it out: `bun run theme:check /path/to/my-theme.zip`.
+A zip made the wrong way gets a `hint:` line above its findings saying which way.
 A zip is at most 5 MB, a font at most 400 KB, an image at most 1 MB, `theme.css` at most 64 KB.
 
 ## Install it
 
-On the blog: **Settings → Appearance → Theme → Install from a file**, and pick the zip. The
+No blog to try it on? The author guide's step 6 starts a throwaway one on your machine from the
+product clone, in two commands. On the blog: **Settings → Appearance → Theme → Install from a
+file**, and pick the zip. The
 admin says what came back: installed, already installed, or refused with one line per problem.
 The new tile carries an **Unreviewed** badge, as every installed theme does. **Preview** opens
 the site in the theme in a new tab without changing anything; choosing the tile and pressing
 **Save** puts it on the blog. **Use this theme's suggested palette and fonts** switches on what
 `suggests` names. Installing the same id with a higher version keeps the old one for
-**Roll back**. The full story, including the HTTP routes, is in
+**Roll back**; installing the same version again with changed files replaces it in place, with
+nothing to roll back to, so raise the version for anything you hand out. The full story, including the HTTP routes, is in
 [theme-install-api.md](https://github.com/joiha-steven/quireink/blob/main/docs/theme-install-api.md).
 
 ## The rules, in short
